@@ -1,51 +1,21 @@
-<project name="school" default="main" basedir=".">
-	<description>
-		Create a Java Project (JAR) with Ant build script
-	</description>
-
-	<property name="projectName" value="DateUtils" />
-
-	<!-- Java sources -->
-	<property name="src.dir" location="src" />
-
-	<!-- Java classes -->
-	<property name="build.dir" location="bin" />
-
-	<!-- Output, Jar -->
-	<property name="dist.dir" location="dist" />
-
-	<target name="init">
-		<!-- Create the time stamp -->
-		<tstamp />
-		<!-- Create the build directory structure used by compile -->
-		<mkdir dir="${build.dir}" />
-	</target>
-
-	<target name="compile" depends="init" description="compile the source ">
-		<!-- Compile the java code from ${src.dir} into ${build.dir} -->
-		<javac includeantruntime="false" srcdir="${src.dir}" destdir="${build.dir}" />
-	</target>
-
-	<target name="dist" depends="compile" description="package, output to JAR">
-
-		<!-- Create the distribution directory -->
-		<mkdir dir="${dist.dir}" />
-
-		<!-- Put everything in ${build} into the {$projectName}-${DSTAMP}.jar file -->
-		<jar jarfile="${dist.dir}/${projectName}-${DSTAMP}.jar" basedir="${build.dir}" >
-		    <manifest>
-			<!-- create an executable Jar -->
-			<attribute name="Main-Class" value="com.mkyong.core.utils.DateUtils" />
-		    </manifest>
-		</jar>
-	</target>
-
-	<target name="clean" description="clean up">
-		<delete dir="${build.dir}" />
-		<delete dir="${dist.dir}" />
-	</target>
-
-	<!-- Default, run this -->
-	<target name="main" depends="clean, compile, dist" />
-
+<project name="School" default="deploy" basedir=".">
+   <target name="init">
+      <property name="sourceDir" value="src"/ >
+      <property name="outputDir" value="classes" />
+      <property name="deployJSP" value="/web/deploy/jsp" />
+      <property name="deployProperties" value="/web/deploy/conf" />
+   </target>
+   <target name="clean" depends="init">
+      <deltree dir="${outputDir}" />
+   </target>
+   <target name="prepare" depends="clean">
+      <mkdir dir="${outputDir}" />
+   </target>
+   <target name="compile" depends="prepare">
+     <javac srcdir="${sourceDir}" destdir="${outputDir}" />
+   </target>
+   <target name="deploy" depends="compile,init">
+     <copydir src="${jsp}" dest="${deployJSP}"/>
+     <copyfile src="server.properties" dest="${deployProperties}"/>
+   </target>
 </project>
